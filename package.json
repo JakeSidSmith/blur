@@ -1,0 +1,29 @@
+{
+  "name": "blur",
+  "version": "0.0.0",
+  "description": "Quickly blur sections of images",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server . -c-0 -o",
+    "test": "eslint index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JakeSidSmith/blur.git"
+  },
+  "keywords": [
+    "blur",
+    "canvas",
+    "image",
+    "privacy"
+  ],
+  "author": "Jake 'Sid' Smith",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/JakeSidSmith/blur/issues"
+  },
+  "homepage": "https://github.com/JakeSidSmith/blur#readme",
+  "devDependencies": {
+    "http-server": "0.10.0"
+  }
+}
