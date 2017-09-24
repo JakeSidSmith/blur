@@ -6,7 +6,8 @@
   "scripts": {
     "start": "./scripts/start",
     "build": "./scripts/build",
-    "test": "eslint index.js"
+    "lint-js": "tslint --project tsconfig.json --type-check '@(src|tests|types)/**/*.@(ts|tsx)'",
+    "test": "npm run lint-js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,8 @@
   "devDependencies": {
     "concurrently": "3.5.0",
     "http-server": "0.10.0",
+    "tslint": "5.7.0",
+    "tslint-eslint-rules": "4.1.1",
     "watch-less-do-more": "0.2.0",
     "watchify": "3.9.0"
   },

@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "removeComments": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "pretty": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "target": "es5",
+    "module": "commonjs",
+    "typeRoots": [
+      "node_modules/@types/",
+      "src/@types/"
+    ]
+  },
+  "exclude": [
+    "node_modules/*",
+    "app/js/*"
+  ]
+}
