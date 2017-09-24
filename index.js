@@ -6,6 +6,7 @@
   var WORKSPACE_PADDING = 10;
 
   var fileReader;
+  var viewImage = document.getElementById('view-image');
   var filePicker = document.getElementById('file-picker');
   var canvas = document.getElementById('canvas');
   var ctx = canvas.getContext('2d');
@@ -58,12 +59,24 @@
     }
   }
 
+  function blurFilePicker (event) {
+    event.target.blur();
+  }
+
+  function openImageInNewTab (event) {
+    event.target.blur();
+    var preview = window.open('about:blank', '_blank');
+    preview.document.write('<img src="' + canvas.toDataURL('image/png') + '" />');
+  }
+
   function init () {
     fileReader = new FileReader();
     fileReader.addEventListener('load', loadImageSrc);
     filePicker.addEventListener('change', loadFile);
+    filePicker.addEventListener('click', blurFilePicker);
     image.addEventListener('load', loadImageIntoCanvas);
     window.addEventListener('resize', scaleCanvas);
+    viewImage.addEventListener('click', openImageInNewTab);
     scaleCanvas();
   }
 

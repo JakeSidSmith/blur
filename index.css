@@ -13,6 +13,12 @@ body {
   background-color: #555;
 }
 
+button:focus,
+input:focus,
+label:focus {
+  outline: none;
+}
+
 .app {
   table-layout: fixed;
   position: absolute;
@@ -42,10 +48,12 @@ body {
   appearance: none;
   width: auto;
   padding: 5px 10px;
+  font-family: arial, helvetica, sans-serif;
   font-size: 14px;
   background-color: #CCC;
   color: #333;
   border-radius: 2px;
+  border: none;
   cursor: pointer;
 }
 
