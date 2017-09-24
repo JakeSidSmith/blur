@@ -76,6 +76,12 @@
         'left:' + (x * 100) + '%;';
     };
 
+    this.updateSize = function (_w, _h) {
+      w = Math.max(Math.min(_w, 1), 0);
+      h = Math.max(Math.min(_h, 1), 0);
+      this.updatePosition();
+    };
+
     this.blur = function () {
       removeClass(wrapper, 'active');
       focused = false;
@@ -84,6 +90,17 @@
     this.focus = function () {
       addClass(wrapper, 'active');
       focused = true;
+    };
+
+    this.destroy = function () {
+      wrapper.remove();
+    };
+
+    this.getPosition = function () {
+      return {
+        x: x,
+        y: y
+      };
     };
 
     this.updatePosition();
@@ -128,8 +145,10 @@
 
   function loadFile (event) {
     if (
-      !image.src ||
-      !blurAreas.length ||
+      (
+        !image.src &&
+        !blurAreas.length
+      ) ||
       confirm('Changing the file will erase any progress you\'ve made. Are you sure you want to continue?')
     ) {
       var files = event.target.files;
@@ -137,6 +156,12 @@
       if (files && files.length) {
         fileReader.readAsDataURL(files[0]);
       }
+
+      each(blurAreas, function (blurArea) {
+        blurArea.destroy();
+      });
+
+      blurAreas = [];
     }
   }
 
@@ -185,7 +210,7 @@
     if (currentTool === 'rectangle') {
       var pos = getPositionInCanvas(event);
       var newBlurArea = new BlurRect(pos.x, pos.y);
-      var currentBlurArea = newBlurArea;
+      currentBlurArea = newBlurArea;
 
       blurAreas.push(newBlurArea);
     }
@@ -203,15 +228,45 @@
     })
   }
 
+  function canvasMouseMove (event) {
+    if (currentBlurArea) {
+      var pos = getPositionInCanvas(event);
+      var blurPos = currentBlurArea.getPosition();
+
+      currentBlurArea.updateSize(pos.x - blurPos.x, pos.y - blurPos.y);
+    }
+  }
+
+  function canvasMouseUp () {
+    currentBlurArea = null;
+
+    each(blurAreas, function (blurArea) {
+      blurArea.blur();
+    });
+  }
+
   function init () {
     fileReader = new FileReader();
     fileReader.addEventListener('load', loadImageSrc);
+
+    // File picker
     filePicker.addEventListener('change', loadFile);
     filePicker.addEventListener('click', blurFilePicker);
+
+    // Image
     image.addEventListener('load', loadImageIntoCanvas);
+
+
+    // Window
     window.addEventListener('resize', scaleCanvas);
+
+    // Tools
     viewImage.addEventListener('click', openImageInNewTab);
+
+    // Canvas wrapper
     canvasWrapper.addEventListener('mousedown', canvasMouseDown);
+    canvasWrapper.addEventListener('mousemove', canvasMouseMove);
+    canvasWrapper.addEventListener('mouseup', canvasMouseUp);
 
     each(tools, function (tool) {
       tool.addEventListener('click', toggleTool);
