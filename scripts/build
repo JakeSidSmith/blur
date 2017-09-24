@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+rm -rf app/js/
+rm -rf app/css/
+
+mkdir -p app/js/
+mkdir -p app/css/
+
+browserify -d src/ts/index.tsx -p [tsify] | uglifyjs --compress --mangle --source-map content="inline",filename="app/js/index.js.map",url="index.js.map" --output app/js/index.js
+lessc src/less/index.less app/css/index.css --silent --compress && postcss --use autoprefixer -r app/css/index.css

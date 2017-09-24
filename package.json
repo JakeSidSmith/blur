@@ -4,7 +4,8 @@
   "description": "Quickly blur sections of images",
   "main": "index.js",
   "scripts": {
-    "start": "http-server . -c-0 -o",
+    "start": "./scripts/start",
+    "build": "./scripts/build",
     "test": "eslint index.js"
   },
   "repository": {
@@ -24,6 +25,20 @@
   },
   "homepage": "https://github.com/JakeSidSmith/blur#readme",
   "devDependencies": {
-    "http-server": "0.10.0"
+    "concurrently": "3.5.0",
+    "http-server": "0.10.0",
+    "watch-less-do-more": "0.2.0",
+    "watchify": "3.9.0"
+  },
+  "dependencies": {
+    "autoprefixer": "7.1.4",
+    "browserify": "14.4.0",
+    "less": "2.7.2",
+    "postcss": "6.0.11",
+    "postcss-cli": "4.1.1",
+    "preact": "8.2.5",
+    "tsify": "3.0.3",
+    "typescript": "2.5.2",
+    "uglify-js": "3.1.2"
   }
 }

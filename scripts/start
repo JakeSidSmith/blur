@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -e
+
+rm -rf app/js/
+rm -rf app/css/
+
+mkdir -p app/js/
+mkdir -p app/css/
+
+concurrently --kill-others \
+  --prefix='name' \
+  --names='watch-less ,watch-js   ,http-server' \
+  --prefix-colors='cyan,red,green' \
+  'watch-less-do-more -u autoprefixer -i src/less/index.less -o app/css/index.css' \
+  'watchify -d src/ts/index.tsx -p [tsify] -o app/js/index.js -v' \
+  'http-server -c-0 app/ -o'
