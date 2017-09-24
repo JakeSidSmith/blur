@@ -52,10 +52,15 @@
   }
 
   function loadFile (event) {
-    var files = event.target.files;
+    if (
+      !image.src ||
+      confirm('Changing the file will erase any progress you\'ve made. Are you sure you want to continue?')
+    ) {
+      var files = event.target.files;
 
-    if (files && files.length) {
-      fileReader.readAsDataURL(files[0]);
+      if (files && files.length) {
+        fileReader.readAsDataURL(files[0]);
+      }
     }
   }
 
