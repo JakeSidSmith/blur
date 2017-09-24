@@ -8,6 +8,7 @@
 
   var fileReader;
   var currentTool;
+  var currentBlurArea;
   var tools = Array.prototype.slice.call(document.getElementsByClassName('tool'));
   var viewImage = document.getElementById('view-image');
   var filePicker = document.getElementById('file-picker');
@@ -59,6 +60,7 @@
   }
 
   function BlurRect (_x, _y) {
+    var focused = false;
     var x = _x;
     var y = _y;
     var w = 0;
@@ -66,6 +68,27 @@
 
     var wrapper = document.createElement('div');
     wrapper.className = 'blur-area';
+
+    this.updatePosition = function () {
+      wrapper.style = 'width:' + (w * 100) + '%;' +
+        'height:' + (h * 100) + '%;' +
+        'top:' + (y * 100) + '%;' +
+        'left:' + (x * 100) + '%;';
+    };
+
+    this.blur = function () {
+      removeClass(wrapper, 'active');
+      focused = false;
+    };
+
+    this.focus = function () {
+      addClass(wrapper, 'active');
+      focused = true;
+    };
+
+    this.updatePosition();
+
+    canvasWrapper.appendChild(wrapper);
   }
 
   function scaleCanvas () {
@@ -145,6 +168,41 @@
     });
   }
 
+  function getPositionInCanvas (event) {
+    var rect = canvasWrapper.getBoundingClientRect();
+    var x = event.clientX;
+    var y = event.clientY;
+
+    return {
+      x: (x - rect.left) / rect.width,
+      y: (y - rect.top) / rect.height
+    };
+  }
+
+  function canvasMouseDown (event) {
+    var previousBlurArea = currentBlurArea;
+
+    if (currentTool === 'rectangle') {
+      var pos = getPositionInCanvas(event);
+      var newBlurArea = new BlurRect(pos.x, pos.y);
+      var currentBlurArea = newBlurArea;
+
+      blurAreas.push(newBlurArea);
+    }
+
+    if (currentBlurArea === previousBlurArea) {
+      currentBlurArea = null;
+    }
+
+    each(blurAreas, function (blurArea) {
+      blurArea.blur();
+
+      if (currentBlurArea === blurArea) {
+        blurArea.focus();
+      }
+    })
+  }
+
   function init () {
     fileReader = new FileReader();
     fileReader.addEventListener('load', loadImageSrc);
@@ -153,8 +211,7 @@
     image.addEventListener('load', loadImageIntoCanvas);
     window.addEventListener('resize', scaleCanvas);
     viewImage.addEventListener('click', openImageInNewTab);
-
-    console.log(tools, Array.isArray(tools));
+    canvasWrapper.addEventListener('mousedown', canvasMouseDown);
 
     each(tools, function (tool) {
       tool.addEventListener('click', toggleTool);

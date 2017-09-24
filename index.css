@@ -57,6 +57,10 @@ label:focus {
   cursor: pointer;
 }
 
+.button.active {
+  background-color: #00DDFF;
+}
+
 .button:hover {
   -moz-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.8);
   box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.8);
@@ -105,6 +109,10 @@ label:focus {
   height: 0;
   overflow: hidden;
   z-index: 1;
+  border: 1px solid #000;
+}
+
+.blur-area.active {
   border: 1px solid #00DDFF;
 }
 
