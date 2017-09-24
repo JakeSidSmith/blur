@@ -4,16 +4,68 @@
 
   var MENU_HEIGHT = document.getElementById('menu').getBoundingClientRect().height;
   var WORKSPACE_PADDING = 10;
+  var MATCHES_WHITESPACE = /\s+/g;
 
   var fileReader;
+  var currentTool;
+  var tools = Array.prototype.slice.call(document.getElementsByClassName('tool'));
   var viewImage = document.getElementById('view-image');
   var filePicker = document.getElementById('file-picker');
+  var canvasWrapper = document.getElementById('canvas-wrapper');
   var canvas = document.getElementById('canvas');
   var ctx = canvas.getContext('2d');
   var image = new Image();
+  var blurAreas = [];
 
   if (!FileReader || !filePicker.files) {
     alert('Sorry, you need a newer browser to use this app.');
+  }
+
+  function each (arr, fn) {
+    for (var i = 0; i < arr.length; i += 1) {
+      fn(arr[i], i);
+    }
+  }
+
+  function addClass (el, className) {
+    var classNames = (el.className || '').split(MATCHES_WHITESPACE);
+    classNames.push(className);
+
+    el.className = classNames.join(' ');
+  }
+
+  function removeClass (el, className) {
+    var classNames = (el.className || '').split(MATCHES_WHITESPACE);
+    var index = classNames.indexOf(className);
+
+    if (index >= 0) {
+      classNames.splice(index, 1);
+
+      el.className = classNames.join(' ');
+    }
+  }
+
+  function toggleClass (el, className) {
+    var classNames = (el.className || '').split(MATCHES_WHITESPACE);
+    var index = classNames.indexOf(className);
+
+    if (index >= 0) {
+      classNames.splice(index, 1);
+    } else {
+      classNames.push(className);
+    }
+
+    el.className = classNames.join(' ');
+  }
+
+  function BlurRect (_x, _y) {
+    var x = _x;
+    var y = _y;
+    var w = 0;
+    var h = 0;
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'blur-area';
   }
 
   function scaleCanvas () {
@@ -35,7 +87,7 @@
       canvasWidth = canvasHeight / imageAspect;
     }
 
-    canvas.style.width = canvasWidth + 'px';
+    canvasWrapper.style.width = canvasWidth + 'px';
   }
 
   function loadImageIntoCanvas () {
@@ -54,6 +106,7 @@
   function loadFile (event) {
     if (
       !image.src ||
+      !blurAreas.length ||
       confirm('Changing the file will erase any progress you\'ve made. Are you sure you want to continue?')
     ) {
       var files = event.target.files;
@@ -74,6 +127,24 @@
     preview.document.write('<img src="' + canvas.toDataURL('image/png') + '" />');
   }
 
+  function toggleTool (event) {
+    var previousTool = currentTool;
+    currentTool = event.target.dataset.tool;
+
+    if (previousTool === currentTool) {
+      currentTool = null;
+    }
+
+
+    each(tools, function (element) {
+      removeClass(element, 'active');
+
+      if (event.target.dataset.tool === currentTool) {
+        addClass(element, 'active');
+      }
+    });
+  }
+
   function init () {
     fileReader = new FileReader();
     fileReader.addEventListener('load', loadImageSrc);
@@ -82,6 +153,13 @@
     image.addEventListener('load', loadImageIntoCanvas);
     window.addEventListener('resize', scaleCanvas);
     viewImage.addEventListener('click', openImageInNewTab);
+
+    console.log(tools, Array.isArray(tools));
+
+    each(tools, function (tool) {
+      tool.addEventListener('click', toggleTool);
+    });
+
     scaleCanvas();
   }
 

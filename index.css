@@ -84,10 +84,28 @@ label:focus {
   height: 100%;
 }
 
+.canvas-wrapper {
+  position: relative;
+  margin: 0 auto;
+}
+
 .canvas {
+  position: relative;
   display: block;
   background-color: #FFF;
-  margin: 0 auto;
+  width: 100%;
+  z-index: 0;
+}
+
+.blur-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  z-index: 1;
+  border: 1px solid #00DDFF;
 }
 
 .table {
